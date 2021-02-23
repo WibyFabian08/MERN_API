@@ -1,10 +1,10 @@
 const express = require('express');
-
 const app = express();
 
-app.use(() => {
-    console.log('Halooo');
-    console.log('tessss')
-})
+const routesMahasiswa = require('./src/routes/mahasiswa');
+const routesProduct = require('./src/routes/product');
+
+app.use('/', routesMahasiswa);
+app.use('/barang', routesProduct);
 
 app.listen(4000);
