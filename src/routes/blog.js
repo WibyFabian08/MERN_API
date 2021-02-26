@@ -13,10 +13,19 @@ router.post(
   blogController.createBlogPost
 );
 
-router.get('/posts', blogController.getAllBlogPost);
+router.get("/posts", blogController.getAllBlogPost);
 
-router.get('/post/:postId', blogController.getBlogPostById);
+router.get("/post/:postId", blogController.getBlogPostById);
 
-router.put('/post/:postId', blogController.updateBlogPost);
+router.put(
+  "/post/:postId",
+  [
+    body("title").isLength({ min: 5 }).withMessage("Input Minimal 5 Karakter"),
+    body("body").isLength({ min: 5 }).withMessage("Input Minimal 5 Karakter"),
+  ],
+  blogController.updateBlogPost
+);
+
+router.delete("/post/:postId", blogController.deleteBlogPost);
 
 module.exports = router;
