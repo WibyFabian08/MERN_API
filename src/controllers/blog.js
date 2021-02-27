@@ -52,16 +52,31 @@ exports.createBlogPost = (req, res, next) => {
 };
 
 exports.getAllBlogPost = (req, res, next) => {
+  const currentPage = req.query.page || 5;
+  const perPage = req.query.perPage || 5;
+
+
   BlogPost.find()
+  .countDocuments()
+  .then((result) => {
+    let totalPosts = result
+    
+
+    BlogPost.find()
+    .skip((parseInt(currentPage) - 1) * parseInt(perPage))
+    .limit(parseInt(perPage))
     .then((result) => {
       res.status(200).json({
         message: "Blog Posts",
         data: result,
+        current_page: parseInt(currentPage),
+        per_page: parseInt(perPage),
+        total_posts: totalPosts
       });
     })
-    .catch((err) => {
-      next(err);
-    });
+    .catch((err) => console.log(err));
+  })
+  .catch((err) => console.log(err));
 };
 
 exports.getBlogPostById = (req, res, next) => {
@@ -157,19 +172,16 @@ exports.deleteBlogPost = (req, res, next) => {
       fs.unlink(image, (err) => console.log(err));
 
       return BlogPost.findByIdAndDelete(postId);
-
-      
-    }).then((result) => {
-      res.status(200).json({
-        message: 'Delete Success',
-        data: result
-      })
     })
-    .catch((err) => console.log(err))
+    .then((result) => {
+      res.status(200).json({
+        message: "Delete Success",
+        data: result,
+      });
+    })
+    .catch((err) => console.log(err));
+};
 
-  };
-  
-  
 // const removeImage = (filePath) => {
 //   console.log("dir name : ", __dirname);
 
