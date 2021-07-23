@@ -33,8 +33,8 @@ exports.createBlogPost = (req, res, next) => {
     body: body,
     image: image,
     author: {
-      uid: 1,
       name: "Wiby Fabian Rianto",
+      profession: 'FrondEnd Developer'
     },
   });
 
@@ -52,7 +52,7 @@ exports.createBlogPost = (req, res, next) => {
 };
 
 exports.getAllBlogPost = (req, res, next) => {
-  const currentPage = req.query.page || 5;
+  const currentPage = req.query.page || 1;
   const perPage = req.query.perPage || 5;
 
 
@@ -61,7 +61,7 @@ exports.getAllBlogPost = (req, res, next) => {
   .then((result) => {
     let totalPosts = result
     
-
+    // pagination
     BlogPost.find()
     .skip((parseInt(currentPage) - 1) * parseInt(perPage))
     .limit(parseInt(perPage))
@@ -131,6 +131,11 @@ exports.updateBlogPost = (req, res, next) => {
         throw err;
       }
 
+      let poto = post.image;
+
+      poto = path.join(__dirname, "../..", poto);
+      fs.unlink(poto, (err) => console.log(err));
+
       // ganti postingan dengan data input baru
       post.title = title;
       post.body = body;
@@ -182,12 +187,3 @@ exports.deleteBlogPost = (req, res, next) => {
     .catch((err) => console.log(err));
 };
 
-// const removeImage = (filePath) => {
-//   console.log("dir name : ", __dirname);
-
-//   filePath = path.join(__dirname, "../..", filepath);
-
-//   console.log('filepath :', filePath);
-
-//   fs.unlink(filePath, (err) => console.log(err));
-// };
