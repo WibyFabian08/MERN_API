@@ -6,7 +6,7 @@ const { body } = require("express-validator");
 const blogController = require("../controllers/blog");
 
 router.post(
-  "/post",
+  "/v1/blog/post",
   [
     body("title").isLength({ min: 5 }).withMessage("Input Minimal 5 Karakter"),
     body("body").isLength({ min: 5 }).withMessage("Input Minimal 5 Karakter"),
@@ -14,17 +14,17 @@ router.post(
   blogController.createBlogPost
 );
 
-router.get("/posts", blogController.getAllBlogPost);
-router.get("/posts/frontend", blogController.getFrontendTag);
-router.get("/posts/backend", blogController.getBackendTag);
-router.get("/posts/fullstack", blogController.getFullstackTag);
-router.get("/posts/travelling", blogController.getTravellingTag);
-router.get("/posts/technology", blogController.getTechnologyTag);
+router.get("/v1/blog/posts", blogController.getAllBlogPost);
+router.get("/v1/blog/posts/frontend", blogController.getFrontendTag);
+router.get("/v1/blog/posts/backend", blogController.getBackendTag);
+router.get("/v1/blog/posts/fullstack", blogController.getFullstackTag);
+router.get("/v1/blog/posts/travelling", blogController.getTravellingTag);
+router.get("/v1/blog/posts/technology", blogController.getTechnologyTag);
 
-router.get("/post/:postId", blogController.getBlogPostById);
+router.get("/v1/blog/post/:postId", blogController.getBlogPostById);
 
 router.put(
-  "/post/:postId",
+  "/v1/blog/post/:postId",
   [
     body("title").isLength({ min: 5 }).withMessage("Input Minimal 5 Karakter"),
     body("body").isLength({ min: 5 }).withMessage("Input Minimal 5 Karakter"),
@@ -32,6 +32,6 @@ router.put(
   blogController.updateBlogPost
 );
 
-router.delete("/post/:postId", blogController.deleteBlogPost);
+router.delete("/v1/blog/post/:postId", blogController.deleteBlogPost);
 
 module.exports = router;
