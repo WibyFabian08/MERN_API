@@ -79,6 +79,6 @@ mongoose
     }
   )
   .then(() => {
-    app.listen(4000, () => console.log("Sudah Konek dan Tidak Ada Masalah"));
+    app.listen(process.env.PORT || 3000, () => console.log("Sudah Konek dan Tidak Ada Masalah"));
   })
   .catch((err) => console.log(err));
