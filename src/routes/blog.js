@@ -2,13 +2,11 @@ const express = require("express");
 const router = express.Router();
 const { body } = require("express-validator");
 
-const uploadProfle = require("../../middlewares/uploadProfile");
 
 const blogController = require("../controllers/blog");
 
 router.post(
   "/post",
-  uploadProfle,
   [
     body("title").isLength({ min: 5 }).withMessage("Input Minimal 5 Karakter"),
     body("body").isLength({ min: 5 }).withMessage("Input Minimal 5 Karakter"),
@@ -17,6 +15,11 @@ router.post(
 );
 
 router.get("/posts", blogController.getAllBlogPost);
+router.get("/posts/frontend", blogController.getFrontendTag);
+router.get("/posts/backend", blogController.getBackendTag);
+router.get("/posts/fullstack", blogController.getFullstackTag);
+router.get("/posts/travelling", blogController.getTravellingTag);
+router.get("/posts/technology", blogController.getTechnologyTag);
 
 router.get("/post/:postId", blogController.getBlogPostById);
 

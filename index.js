@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
-// const multer = require("multer");
+const multer = require("multer");
 const path = require("path");
 
 const routesAuth = require("./src/routes/auth");
@@ -20,37 +20,37 @@ app.use((req, res, next) => {
 });
 
 // mengatur penyimpanan file dan nama file
-// const fileStorage = multer.diskStorage({
-//   // tempat menyimpan fle
-//   destination: (req, file, cb) => {
-//     cb(null, "images");
-//   },
-//   filename: (req, file, cb) => {
-//     cb(null, new Date().getTime() + "-" + file.originalname);
-//   },
-// });
+const fileStorage = multer.diskStorage({
+  // tempat menyimpan fle
+  destination: (req, file, cb) => {
+    cb(null, "images");
+  },
+  filename: (req, file, cb) => {
+    cb(null, new Date().getTime() + "-" + file.originalname);
+  },
+});
 
 // filter file yang diupload
-// const fileFilter = (req, file, cb) => {
-//   if (
-//     file.mimetype === "image/png" ||
-//     file.mimetype === "image/jpg" ||
-//     file.mimetype === "image/jpeg"
-//   ) {
-//     cb(null, true);
-//   } else {
-//     cb(null, false);
-//   }
-// };
+const fileFilter = (req, file, cb) => {
+  if (
+    file.mimetype === "image/png" ||
+    file.mimetype === "image/jpg" ||
+    file.mimetype === "image/jpeg"
+  ) {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
 
 app.use(bodyParser.json());
 
-// app.use(
-//   multer({
-//     storage: fileStorage,
-//     fileFilter: fileFilter,
-//   }).array("image")
-// );
+app.use(
+  multer({
+    storage: fileStorage,
+    fileFilter: fileFilter,
+  }).single("image")
+);
 
 app.use("/images", express.static(path.join(__dirname, "images")));
 
@@ -71,7 +71,13 @@ app.use((error, req, res, next) => {
 
 mongoose
   .connect(
-    "mongodb+srv://wiby:masterofcad@cluster0.zneu2.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+    "mongodb+srv://wiby:masterofcad@cluster0.zneu2.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useCreateIndex: true,
+      useFindAndModify: true,
+    }
   )
   .then(() => {
     app.listen(4000, () => console.log("Sudah Konek dan Tidak Ada Masalah"));

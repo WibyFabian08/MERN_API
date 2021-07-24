@@ -2,8 +2,9 @@ const { validationResult } = require("express-validator");
 const path = require("path");
 const fs = require("fs");
 const BlogPost = require("../models/blog");
+const Tag = require("../models/tag");
 
-exports.createBlogPost = (req, res, next) => {
+exports.createBlogPost = async (req, res, next) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -23,61 +24,118 @@ exports.createBlogPost = (req, res, next) => {
     throw err;
   }
 
-  const title = req.body.title;
-  const image = req.file.path;
-  const body = req.body.body;
+  console.log(req.body.tag);
 
   // save ke database
   const Posting = new BlogPost({
-    title: title,
-    body: body,
-    image: image,
+    title: req.body.title,
+    body: req.body.body,
+    image: req.file.path,
+    tag: req.body.tag,
     author: {
-      name: "Wiby Fabian Rianto",
-      profession: 'FrondEnd Developer'
+      name: req.body.name,
+      profession: req.body.profession,
     },
   });
 
-  Posting.save().then((result) => {
-    res
-      .status(201)
-      .json({
-        message: "Create Blog Post Success",
-        data: result,
-      })
-      .catch((err) => {
-        next(err);
-      });
+  console.log(Posting);
+
+  await Posting.save();
+
+  res.status(200).json({
+    status: "ok",
+    Posting,
   });
 };
 
 exports.getAllBlogPost = (req, res, next) => {
   const currentPage = req.query.page || 1;
-  const perPage = req.query.perPage || 5;
-
+  const perPage = req.query.perPage || 20;
 
   BlogPost.find()
-  .countDocuments()
-  .then((result) => {
-    let totalPosts = result
-    
-    // pagination
-    BlogPost.find()
-    .skip((parseInt(currentPage) - 1) * parseInt(perPage))
-    .limit(parseInt(perPage))
+    .countDocuments()
     .then((result) => {
-      res.status(200).json({
-        message: "Blog Posts",
-        data: result,
-        current_page: parseInt(currentPage),
-        per_page: parseInt(perPage),
-        total_posts: totalPosts
-      });
+      let totalPosts = result;
+
+      // pagination
+      BlogPost.find()
+        .skip((parseInt(currentPage) - 1) * parseInt(perPage))
+        .limit(parseInt(perPage))
+        .sort({createdAt: -1})
+        .then((result) => {
+          console.log(result.data);
+          res.status(200).json({
+            message: "Blog Posts",
+            data: result,
+            current_page: parseInt(currentPage),
+            per_page: parseInt(perPage),
+            total_posts: totalPosts,
+          });
+        })
+        .catch((err) => console.log(err));
     })
     .catch((err) => console.log(err));
-  })
-  .catch((err) => console.log(err));
 };
+
+exports.getFrontendTag = async (req, res) => {
+
+  const posts = await BlogPost.find({tag: 'frontend'});
+
+  res.status(200).json({
+    status: 'ok',
+    tag: 'frontend',
+    data: posts
+  })
+
+}
+
+exports.getBackendTag = async (req, res) => {
+
+  const posts = await BlogPost.find({tag: 'backend'});
+
+  res.status(200).json({
+    status: 'ok',
+    tag: 'backend',
+    data: posts
+  })
+
+}
+
+exports.getFullstackTag = async (req, res) => {
+
+  const posts = await BlogPost.find({tag: 'fullstack'});
+
+  res.status(200).json({
+    status: 'ok',
+    tag: 'fullstack',
+    data: posts
+  })
+
+}
+
+exports.getTravellingTag = async (req, res) => {
+
+  const posts = await BlogPost.find({tag: 'travelling'});
+
+  res.status(200).json({
+    status: 'ok',
+    tag: 'travelling',
+    data: posts
+  })
+
+}
+
+exports.getTechnologyTag = async (req, res) => {
+
+  const posts = await BlogPost.find({tag: 'technology'});
+
+  res.status(200).json({
+    status: 'ok',
+    tag: 'technology',
+    data: posts
+  })
+
+}
 
 exports.getBlogPostById = (req, res, next) => {
   const postId = req.params.postId;
@@ -186,4 +244,3 @@ exports.deleteBlogPost = (req, res, next) => {
     })
     .catch((err) => console.log(err));
 };
-

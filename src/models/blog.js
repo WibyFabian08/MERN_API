@@ -10,6 +10,10 @@ const BlogPost = new Schema({
         type: String,
         required: true
     },
+    tag: {
+        type: String,
+        required: true
+    },
     image: {
         type: String,
         require: true
