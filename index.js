@@ -69,17 +69,30 @@ app.use((error, req, res, next) => {
   });
 });
 
-mongoose
-  .connect(
-    "mongodb+srv://wiby:masterofcad@cluster0.zneu2.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
-    {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      useCreateIndex: true,
-      useFindAndModify: true,
-    }
-  )
-  .then(() => {
-    app.listen(4000, () => console.log("Sudah Konek dan Tidak Ada Masalah"));
-  })
-  .catch((err) => console.log(err));
+mongoose.connect("mongodb+srv://wiby:masterofcad@cluster0.zneu2.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useCreateIndex: true,
+  useFindAndModify: true,
+});
+
+const db = mongoose.connection;
+db.on("error", console.error.bind(console, "connection error:"));
+db.once("open", function () {
+  console.log("Database sudah Konek");
+});
+
+// mongoose
+//   .connect(
+//     "mongodb+srv://wiby:masterofcad@cluster0.zneu2.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
+//     {
+//       useNewUrlParser: true,
+//       useUnifiedTopology: true,
+//       useCreateIndex: true,
+//       useFindAndModify: true,
+//     }
+//   )
+//   .then(() => {
+//     app.listen(4000, () => console.log("Sudah Konek dan Tidak Ada Masalah"));
+//   })
+//   .catch((err) => console.log(err));
